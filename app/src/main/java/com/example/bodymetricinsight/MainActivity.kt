@@ -18,9 +18,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,7 +45,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-                    WelcomeScreen(
+                    BodyMetricInsightApp(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -50,7 +55,31 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WelcomeScreen(modifier: Modifier = Modifier) {
+fun BodyMetricInsightApp(modifier: Modifier = Modifier) {
+    var currentScreen by rememberSaveable { mutableStateOf("welcome") }
+
+    when (currentScreen) {
+        "welcome" -> WelcomeScreen(
+            modifier = modifier,
+            onStartClick = {
+                currentScreen = "calculator"
+            }
+        )
+
+        "calculator" -> CalculatorScreen(
+            modifier = modifier,
+            onBackClick = {
+                currentScreen = "welcome"
+            }
+        )
+    }
+}
+
+@Composable
+fun WelcomeScreen(
+    modifier: Modifier = Modifier,
+    onStartClick: () -> Unit
+) {
     val backgroundColor = Color(0xFFF7F4EF)
     val primaryColor = Color(0xFF2F5D50)
     val textColor = Color(0xFF1F2933)
@@ -113,9 +142,7 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                 )
 
                 Button(
-                    onClick = {
-                        // Calculator screen will be added in the next step.
-                    },
+                    onClick = onStartClick,
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = primaryColor
@@ -134,10 +161,88 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun CalculatorScreen(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit
+) {
+    val backgroundColor = Color(0xFFF7F4EF)
+    val primaryColor = Color(0xFF2F5D50)
+    val textColor = Color(0xFF1F2933)
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(backgroundColor)
+            .safeDrawingPadding()
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(28.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(28.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(18.dp)
+            ) {
+                Text(
+                    text = "BMI Calculator",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = primaryColor,
+                    textAlign = TextAlign.Center
+                )
+
+                Text(
+                    text = "Calculator form will be added in the next step.",
+                    fontSize = 16.sp,
+                    color = textColor,
+                    textAlign = TextAlign.Center
+                )
+
+                OutlinedButton(
+                    onClick = onBackClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = "Back to Welcome",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(6.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun WelcomeScreenPreview() {
     BodyMetricInsightTheme {
-        WelcomeScreen()
+        WelcomeScreen(
+            onStartClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CalculatorScreenPreview() {
+    BodyMetricInsightTheme {
+        CalculatorScreen(
+            onBackClick = {}
+        )
     }
 }

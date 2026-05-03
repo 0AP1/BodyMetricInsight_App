@@ -2,6 +2,9 @@ package com.example.bodymetricinsight
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
@@ -170,6 +173,9 @@ fun CalculatorScreen(
     val primaryColor = Color(0xFF2F5D50)
     val textColor = Color(0xFF1F2933)
 
+    var heightInput by rememberSaveable { mutableStateOf("") }
+    var weightInput by rememberSaveable { mutableStateOf("") }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -204,11 +210,55 @@ fun CalculatorScreen(
                 )
 
                 Text(
-                    text = "Calculator form will be added in the next step.",
+                    text = "Enter your height and weight below.",
                     fontSize = 16.sp,
                     color = textColor,
                     textAlign = TextAlign.Center
                 )
+
+                OutlinedTextField(
+                    value = heightInput,
+                    onValueChange = { heightInput = it },
+                    label = {
+                        Text("Height (cm)")
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    )
+                )
+
+                OutlinedTextField(
+                    value = weightInput,
+                    onValueChange = { weightInput = it },
+                    label = {
+                        Text("Weight (kg)")
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    )
+                )
+
+                Button(
+                    onClick = {
+                        // BMI calculation will be added in the next step.
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = primaryColor
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = "Calculate BMI",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(6.dp)
+                    )
+                }
 
                 OutlinedButton(
                     onClick = onBackClick,
@@ -224,25 +274,5 @@ fun CalculatorScreen(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun WelcomeScreenPreview() {
-    BodyMetricInsightTheme {
-        WelcomeScreen(
-            onStartClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CalculatorScreenPreview() {
-    BodyMetricInsightTheme {
-        CalculatorScreen(
-            onBackClick = {}
-        )
     }
 }

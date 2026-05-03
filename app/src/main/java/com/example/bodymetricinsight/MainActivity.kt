@@ -175,6 +175,7 @@ fun CalculatorScreen(
 
     var heightInput by rememberSaveable { mutableStateOf("") }
     var weightInput by rememberSaveable { mutableStateOf("") }
+    var bmiResult by rememberSaveable { mutableStateOf("") }
 
     Box(
         modifier = modifier
@@ -244,7 +245,16 @@ fun CalculatorScreen(
 
                 Button(
                     onClick = {
-                        // BMI calculation will be added in the next step.
+                        val heightCm = heightInput.toDoubleOrNull()
+                        val weightKg = weightInput.toDoubleOrNull()
+
+                        if (heightCm != null && weightKg != null && heightCm > 0 && weightKg > 0) {
+                            val heightM = heightCm / 100
+                            val bmi = weightKg / (heightM * heightM)
+                            bmiResult = "Your BMI is %.2f".format(bmi)
+                        } else {
+                            bmiResult = "Please enter valid height and weight."
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
@@ -257,6 +267,16 @@ fun CalculatorScreen(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(6.dp)
+                    )
+                }
+
+                if (bmiResult.isNotEmpty()) {
+                    Text(
+                        text = bmiResult,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = primaryColor,
+                        textAlign = TextAlign.Center
                     )
                 }
 
